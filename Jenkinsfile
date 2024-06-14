@@ -45,11 +45,11 @@ pipeline{
     }
      post { 
         success {
-            echo ' The pipeline executed successfully'
+            echo 'The pipeline executed successfully'
         }
         always { 
             echo 'I will always say Hello again!'
-            deleteDir()
+           // deleteDir()
         }
          failure { 
             echo 'I will run when pipeline is failure'
