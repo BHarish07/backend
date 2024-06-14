@@ -28,7 +28,7 @@ pipeline{
             sh """
                sudo npm install 
                ls -ltr 
-               
+
                """
             }
         }
@@ -51,4 +51,6 @@ pipeline{
             echo 'I will always say Hello again!'
             deleteDir()
         }
+     }
+
 }
