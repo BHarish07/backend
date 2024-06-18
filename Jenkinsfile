@@ -61,6 +61,7 @@ pipeline{
                 }
             }
         }
+        // Quality gate
 
         stage("Quality Gate") {
             steps {
