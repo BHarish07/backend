@@ -1,40 +1,36 @@
-pipeline{
-    agent{
+pipeline {
+    agent {
         label 'AGENT-1'
     }
-    options{
+    options {
         timeout(time: 30, unit: 'MINUTES')
         disableConcurrentBuilds()
         ansiColor('xterm')
     }
-    environment{
-      def  appVersion = ''
-      nexusUrl = 'nexus.harishbalike.online:8081'
-
-    }
     parameters{
         booleanParam(name: 'deploy', defaultValue: false, description: 'Toggle this value')
     }
-    stages{
-
+    environment{
+        def appVersion = '' //variable declaration
+        nexusUrl = 'nexus.harishbalike.online:8081'
+    }
+    stages {
         stage('read the version'){
             steps{
                 script{
-                    def packageJson =  readJSON file: 'package.json' 
+                    def packageJson = readJSON file: 'package.json'
                     appVersion = packageJson.version
-                    echo 'Application version: ${appVersion}'
+                    echo "application version: $appVersion"
                 }
-
             }
         }
-
-        stage('install dependencies'){
-            steps{
+        stage('Install Dependencies') {
+            steps {
                sh """
-                    sudo npm install 
-                    ls -ltr 
-
-                 """
+                npm install
+                ls -ltr
+                echo "application version: $appVersion"
+               """
             }
         }
         stage('Build'){
@@ -42,13 +38,10 @@ pipeline{
                 sh """
                 zip -q -r backend-${appVersion}.zip * -x Jenkinsfile -x backend-${appVersion}.zip
                 ls -ltr
-
                 """
             }
         }
-
-        // sonarQube 
-
+        
         stage('Sonar Scan'){
             environment {
                 scannerHome = tool 'sonar-6.0' //referring scanner CLI
@@ -61,7 +54,6 @@ pipeline{
                 }
             }
         }
-        // Quality gate
 
         stage("Quality Gate") {
             steps {
@@ -70,6 +62,7 @@ pipeline{
               }
             }
         }
+
         stage('Nexus Artifact Upload'){
             steps{
                 script{
@@ -106,16 +99,8 @@ pipeline{
                 }
             }
         }
-        stage('deleteing directory') {
-            steps {
-                dir ('/home/ec2-user/jenkins/workspace') {
-                    deleteDir()
-                }
-            }
-        }
-
     }
-     post { 
+    post { 
         always { 
             echo 'I will always say Hello again!'
             deleteDir()
