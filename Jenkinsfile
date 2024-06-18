@@ -106,19 +106,25 @@ pipeline{
                 }
             }
         }
+        stage('deleteing directory') {
+            steps {
+                dir ('/home/ec2-user/jenkins/workspace') {
+                    deleteDir()
+                }
+            }
+        }
 
     }
      post { 
-        success {
-            echo 'The pipeline executed successfully'
-        }
         always { 
             echo 'I will always say Hello again!'
             deleteDir()
         }
-         failure { 
+        success { 
+            echo 'I will run when pipeline is success'
+        }
+        failure { 
             echo 'I will run when pipeline is failure'
         }
-     }
-
+    }
 }
