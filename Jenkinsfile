@@ -103,7 +103,6 @@ pipeline {
     post { 
         always { 
             echo 'I will always say Hello again!'
-            sh "sudo rm -rf /home/ec2-user/jenkins/workspace/"
             deleteDir()
         }
         success { 
